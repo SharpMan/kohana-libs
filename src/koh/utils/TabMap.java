@@ -13,6 +13,7 @@ public class TabMap<TClass> {
     TClass[] tab;
     private int start_index;
 
+    @SuppressWarnings(value = "unchecked")
     public TabMap(Class<TClass> classe, int size, int start_index) {
         this.start_index = start_index;
         this.tab = (TClass[]) Array.newInstance(classe, size);
@@ -97,10 +98,6 @@ public class TabMap<TClass> {
 
     public void clear() {
         this.tab = null;
-        try {
-            this.finalize();
-        } catch (Throwable ex) {
-        }
     }
 
     public TClass get(int key) {
