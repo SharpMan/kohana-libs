@@ -4,7 +4,7 @@ package koh.inter;
  *
  * @author Neo-Craft
  */
-public enum MessageEnum {
+public enum InterMessageEnum {
 
     HelloMessage(1),
     PlayerCommingMessage(2),
@@ -13,7 +13,7 @@ public enum MessageEnum {
 
     int value;
 
-    private MessageEnum(int value) {
+    private InterMessageEnum(int value) {
         this.value = value;
     }
 
@@ -21,8 +21,8 @@ public enum MessageEnum {
         return value;
     }
 
-    public static MessageEnum valueOf(int value) {
-        for (MessageEnum failure : values()) {
+    public static InterMessageEnum valueOf(int value) {
+        for (InterMessageEnum failure : values()) {
             if (failure.value == value) {
                 return failure;
             }

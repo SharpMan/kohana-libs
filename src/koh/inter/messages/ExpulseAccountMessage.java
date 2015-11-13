@@ -1,7 +1,7 @@
 package koh.inter.messages;
 
 import koh.inter.InterMessage;
-import koh.inter.MessageEnum;
+import koh.inter.InterMessageEnum;
 import org.apache.mina.core.buffer.IoBuffer;
 
 /**
@@ -23,7 +23,7 @@ public class ExpulseAccountMessage implements InterMessage {
 
     @Override
     public int getMessageId() {
-        return MessageEnum.ExpulseAccount.value();
+        return InterMessageEnum.ExpulseAccount.value();
     }
 
     @Override

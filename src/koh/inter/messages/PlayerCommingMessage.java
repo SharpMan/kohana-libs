@@ -31,14 +31,6 @@ public class PlayerCommingMessage implements InterMessage {
 
     private final static CharsetEncoder IoBufferEncoder = Charsets.UTF_8.newEncoder();
     private final static CharsetDecoder IoBufferDecoder = Charsets.UTF_8.newDecoder();
-    /*En java UShort = int
-     [20:57:32] ٠AlleosDev٠: enfin c'est [0-65635]
-     [20:57:36] ٠AlleosDev٠: un UnsignedShort
-     [20:57:43] ٠AlleosDev٠: changes juste
-     [20:57:49] ٠AlleosDev٠: buffer.putInt((int)(value.length() * IoBufferEncoder.averageBytesPerChar()));
-     [20:57:50] ٠AlleosDev٠: par
-     [20:58:02] ٠AlleosDev٠: buffer.putUnsignedShort((int)(value.length() * IoBufferEncoder.averageBytesPerChar()));
-     [20:58:14 | Modifié (20:58:23)] ٠AlleosDev٠: et update le read : return buffer.getString(buffer.getUnsignedShort(), IoBufferDecoder); */
 
     public static void putString(IoBuffer buffer, String value) throws CharacterCodingException {
         buffer.putInt((int) (value.length() * IoBufferEncoder.averageBytesPerChar()));

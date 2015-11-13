@@ -6,8 +6,7 @@
 package koh.inter.messages;
 
 import koh.inter.InterMessage;
-import koh.inter.MessageEnum;
-import koh.protocol.client.Message;
+import koh.inter.InterMessageEnum;
 import org.apache.mina.core.buffer.IoBuffer;
 
 /**
@@ -31,7 +30,7 @@ public class PlayerCreatedMessage implements InterMessage {
 
     @Override
     public int getMessageId() {
-        return MessageEnum.PlayerCreated.value();
+        return InterMessageEnum.PlayerCreated.value();
     }
 
     @Override

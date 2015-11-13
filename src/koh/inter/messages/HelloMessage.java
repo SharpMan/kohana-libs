@@ -1,8 +1,7 @@
 package koh.inter.messages;
 
 import koh.inter.InterMessage;
-import koh.inter.MessageEnum;
-import koh.protocol.client.Message;
+import koh.inter.InterMessageEnum;
 import org.apache.mina.core.buffer.IoBuffer;
 import static koh.protocol.client.BufUtils.*;
 
@@ -26,7 +25,7 @@ public class HelloMessage implements InterMessage {
 
     @Override
     public int getMessageId() {
-        return MessageEnum.HelloMessage.value();
+        return InterMessageEnum.HelloMessage.value();
     }
 
     @Override
