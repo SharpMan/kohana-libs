@@ -1,4 +1,4 @@
-package koh.commons;
+package koh.concurrency;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;

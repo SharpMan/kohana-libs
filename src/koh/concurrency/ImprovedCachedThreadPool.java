@@ -1,4 +1,4 @@
-package koh.commons;
+package koh.concurrency;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 

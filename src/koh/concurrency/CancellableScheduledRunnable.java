@@ -1,4 +1,4 @@
-package koh.commons;
+package koh.concurrency;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -8,15 +8,15 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Neo-Craft
  */
-public abstract class CancellableExecutorRunnable implements Runnable {
+public abstract class CancellableScheduledRunnable implements Runnable {
 
     private ScheduledFuture<?> myFuture;
 
-    public CancellableExecutorRunnable(ScheduledExecutorService service, long delay, long period) {
-        this.myFuture = service.scheduleWithFixedDelay(this, delay, delay, TimeUnit.MILLISECONDS);
+    public CancellableScheduledRunnable(ScheduledExecutorService service, long delay, long period) {
+        this.myFuture = service.scheduleWithFixedDelay(this, delay, period, TimeUnit.MILLISECONDS);
     }
 
-    public CancellableExecutorRunnable(ScheduledExecutorService service, long endCallBack) {
+    public CancellableScheduledRunnable(ScheduledExecutorService service, long endCallBack) {
         this.myFuture = service.schedule(this, endCallBack, TimeUnit.MILLISECONDS);
     }
 

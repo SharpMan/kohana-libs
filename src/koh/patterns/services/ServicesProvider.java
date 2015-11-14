@@ -88,9 +88,7 @@ public class ServicesProvider extends PatternProvider {
             return;
         try {
             instances.stream()
-                    .forEach((service) -> {
-                        service.start();
-                    });
+                    .forEach(Service::start);
         }finally {
             this.started = true;
         }
