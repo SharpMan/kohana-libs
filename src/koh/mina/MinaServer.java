@@ -184,6 +184,11 @@ public class MinaServer<C extends MinaClient, M> {
                 .forEach((client) -> client.write(message));
     }
 
+    public void broadcast(Stream<MinaClient> clients, Object message) {
+        parallelStreamOn(clients, broadcaster)
+                .forEach((client) -> client.write(message));
+    }
+
     public void broadcastDisconnection(Object message) {
         parallelStreamOn(clients.parallelStream(), broadcaster)
                 .forEach((client) -> client.disconnect(message));
@@ -191,6 +196,11 @@ public class MinaServer<C extends MinaClient, M> {
 
     public void broadcastDisconnection(Object message, Predicate<MinaClient> predicate) {
         parallelStreamOn(clients.parallelStream(), broadcaster).filter(predicate)
+                .forEach((client) -> client.disconnect(message));
+    }
+
+    public void broadcastDisconnection(Stream<MinaClient> clients, Object message) {
+        parallelStreamOn(clients, broadcaster)
                 .forEach((client) -> client.disconnect(message));
     }
 
