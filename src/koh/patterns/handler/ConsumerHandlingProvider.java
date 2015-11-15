@@ -6,9 +6,7 @@ import koh.patterns.handler.api.ConsumableHandleMethod;
 import koh.patterns.handler.api.Handler;
 import koh.patterns.handler.api.HandlerEmitter;
 import koh.patterns.handler.api.HandlingProvider;
-import koh.patterns.handler.context.Ctx;
 import koh.patterns.handler.context.RequireContexts;
-import koh.patterns.BreakPropagation;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -17,11 +15,8 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Usable for procedures handling like @[attribute] public void onHelloConnect(NetClient client, HelloConnectMessage msg);
@@ -45,6 +40,9 @@ public class ConsumerHandlingProvider<E extends HandlerEmitter, S> extends Handl
 
     @Override
     protected void configure() {
+
+        requestStaticInjection(emitterClass);
+
         Map<Class<?>, List<ConsumableHandleMethod<E, S>>> handlers = new HashMap<>();
 
         Reflections reflections = new Reflections(new ConfigurationBuilder()
@@ -64,7 +62,7 @@ public class ConsumerHandlingProvider<E extends HandlerEmitter, S> extends Handl
             if(!Modifier.isPublic(method.getModifiers()))
                 return;
             if(method.getParameterTypes().length == 2
-                    && rootEmitterclass.isAssignableFrom(method.getParameterTypes()[0])
+                    && emitterClass == method.getParameterTypes()[0]
                     && method.getParameterTypes()[1] != rootParameterClass
                     && rootParameterClass.isAssignableFrom(method.getParameterTypes()[1])) {
                 List<ConsumableHandleMethod<E, S>> callbacks = handlers.get(method.getParameterTypes()[1]);

@@ -6,9 +6,7 @@ import koh.patterns.handler.api.HandleMethod;
 import koh.patterns.handler.api.Handler;
 import koh.patterns.handler.api.HandlerEmitter;
 import koh.patterns.handler.api.HandlingProvider;
-import koh.patterns.handler.context.Ctx;
 import koh.patterns.handler.context.RequireContexts;
-import koh.patterns.BreakPropagation;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodParameterScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -17,11 +15,8 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Usable for procedures handling like @Connect public void onConnect(NetClient client);
@@ -38,6 +33,9 @@ public class SimpleHandlingProvider<E extends HandlerEmitter> extends HandlingPr
 
     @Override
     protected void configure() {
+
+        requestStaticInjection(emitterClass);
+
         Map<Class<? extends Annotation>, List<HandleMethod<E>>> handlers = new HashMap<>();
 
         Reflections reflections = new Reflections(new ConfigurationBuilder()
@@ -57,7 +55,8 @@ public class SimpleHandlingProvider<E extends HandlerEmitter> extends HandlingPr
             if(!Modifier.isPublic(method.getModifiers()))
                 return;
             if(method.getParameterTypes().length == 1
-                    && rootEmitterclass.isAssignableFrom(method.getParameterTypes()[0])) {
+                    && emitterClass == method.getParameterTypes()[0]) {
+
                 for(Annotation annotation : method.getAnnotations()) {
                     List<HandleMethod<E>> callbacks = handlers.get(annotation.annotationType());
                     if( callbacks == null) {

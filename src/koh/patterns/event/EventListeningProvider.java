@@ -43,8 +43,8 @@ public class EventListeningProvider extends HandlingProvider<Event> {
             if(!Modifier.isPublic(method.getModifiers()))
                 return;
             if(method.getParameterTypes().length == 1
-                    && method.getParameterTypes()[0] != rootEmitterclass
-                    && rootEmitterclass.isAssignableFrom(method.getParameterTypes()[0])) {
+                    && method.getParameterTypes()[0] != emitterClass
+                    && emitterClass.isAssignableFrom(method.getParameterTypes()[0])) {
                 EventTreatmentPriority priority = method.getAnnotation(Listen.class).priority();
                 List<PrioritizedTreatEvent> callbacks = listeners.get(method.getParameterTypes()[0]);
                 if( callbacks == null) {

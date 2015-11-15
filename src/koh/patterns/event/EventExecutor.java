@@ -29,7 +29,6 @@ public class EventExecutor {
     }
 
     public void fire(Event event) {
-        System.out.println("Listeners : " + listeners.size());
         Collection<PrioritizedTreatEvent> callbacks = listeners.get(event.getClass());
         if(callbacks == null)
             return;
