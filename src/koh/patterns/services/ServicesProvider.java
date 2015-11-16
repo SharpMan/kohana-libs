@@ -1,16 +1,15 @@
 package koh.patterns.services;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Binding;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import koh.patterns.PatternProvider;
 import koh.patterns.services.api.DependsOn;
 import koh.patterns.services.api.Service;
 import koh.patterns.services.api.ServiceDependency;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class ServicesProvider extends PatternProvider {
@@ -77,6 +76,7 @@ public class ServicesProvider extends PatternProvider {
             @Override
             protected void configure() {
                 service.configure(binder());
+                service.inject(injector);
             }
         });
 

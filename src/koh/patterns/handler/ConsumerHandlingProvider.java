@@ -16,7 +16,10 @@ import org.reflections.util.FilterBuilder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Usable for procedures handling like @[attribute] public void onHelloConnect(NetClient client, HelloConnectMessage msg);
@@ -40,7 +43,6 @@ public class ConsumerHandlingProvider<E extends HandlerEmitter, S> extends Handl
 
     @Override
     protected void configure() {
-
         requestStaticInjection(emitterClass);
 
         Map<Class<?>, List<ConsumableHandleMethod<E, S>>> handlers = new HashMap<>();

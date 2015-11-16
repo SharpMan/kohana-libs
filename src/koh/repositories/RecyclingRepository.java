@@ -58,20 +58,28 @@ public class RecyclingRepository<K, T extends InUseCheckable> {
     }
 
     public T get(K key) {
-        return this.getReference(key).get();
+        try {
+            return this.getReference(key).get();
+        }catch(NullPointerException ignored) {
+            return null;
+        }
     }
 
     public RepositoryReference<T> getReference(K key) {
-        RepositoryReference<T> value = entities.get(key);
-        if(value == null)
-            return this.load(key);
+        try {
+            RepositoryReference<T> value = entities.get(key);
+            if(value == null)
+                return this.load(key);
 
-        value.sync(() -> {
-            if(!value.loaded()) {
-                this.reload(value, key);
-            }
-        });
-        return value;
+            value.sync(() -> {
+                if(!value.loaded()) {
+                    this.reload(value, key);
+                }
+            });
+            return value;
+        }catch(NullPointerException ignored) {
+            return null;
+        }
     }
 
     private synchronized RepositoryReference<T> load(K key) {

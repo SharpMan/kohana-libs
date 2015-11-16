@@ -1,6 +1,7 @@
 package koh.patterns.services.api;
 
 import com.google.inject.Binder;
+import com.google.inject.Injector;
 
 public interface Service {
 
@@ -9,4 +10,6 @@ public interface Service {
     void stop();
 
     default void configure(Binder binder){ };
+
+    default void inject(Injector injector){ };
 }
