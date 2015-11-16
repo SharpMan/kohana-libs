@@ -126,7 +126,7 @@ public class MinaClient implements HandlerEmitter {
 
     @Override
     public void setHandlerContext(Context context) {
-        this.context.lazySet(context);
+        this.context.set(context);
     }
 
     @Override

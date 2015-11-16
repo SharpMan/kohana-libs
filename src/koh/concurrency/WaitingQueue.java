@@ -56,10 +56,11 @@ public class WaitingQueue<T> {
         queue.remove(value);
     }
 
-    public void push(T value) {
-        queue.addIfAbsent(value);
+    public int push(T value) {
         synchronized(queue){
+            queue.addIfAbsent(value);
             queue.notify();
+            return size();
         }
     }
 }
