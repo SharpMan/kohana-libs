@@ -64,7 +64,7 @@ public class MinaServer<C extends MinaClient, M> {
                 messagesReception, listener, rootMessagesClass);
     }
 
-    public void configure(ProtocolDecoder decoder, ProtocolEncoder encoder, int minReadSize, int maxReadSize, int inactiveTimeoutSeconds) {
+    public void configure(ProtocolDecoder decoder, ProtocolEncoder encoder, int minReadSize, int maxReadSize, int inactiveTimeoutSeconds, boolean disableTcpDelays) {
         acceptor.setReuseAddress(true);
         acceptor.setBacklog(100000);
 
@@ -74,7 +74,7 @@ public class MinaServer<C extends MinaClient, M> {
         this.acceptor.getSessionConfig().setMaxReadBufferSize(maxReadSize);
         this.acceptor.getSessionConfig().setMinReadBufferSize(minReadSize);
         this.acceptor.getSessionConfig().setReaderIdleTime(inactiveTimeoutSeconds);
-        this.acceptor.getSessionConfig().setTcpNoDelay(true);
+        this.acceptor.getSessionConfig().setTcpNoDelay(disableTcpDelays);
         this.acceptor.getSessionConfig().setKeepAlive(true);
     }
 
@@ -117,10 +117,11 @@ public class MinaServer<C extends MinaClient, M> {
 
         @Override
         public void sessionOpened(IoSession session) throws Exception {
-            actions.handle(sessionClient(session), Connect.class);
+            Object attr = session.getAttribute(keyAttr);
+            if(attr != null)
+                actions.handle((C)attr, Connect.class);
         }
 
-        @SuppressWarnings("SuspiciousMethodCalls")
         @Override
         public void sessionClosed(IoSession session) throws Exception {
             Object attr = session.removeAttribute(keyAttr);

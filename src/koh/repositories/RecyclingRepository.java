@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
@@ -18,12 +18,10 @@ public class RecyclingRepository<K, T extends InUseCheckable> {
     private final long ttl;
     private final TimeUnit ttlUnit;
 
-    private final Function<T, K> keyResolver;
     private final Function<K, T> loader;
-    private final BiConsumer<K, T> unloader;
+    private final Consumer<T> unloader;
 
-    public RecyclingRepository(Function<T, K> keyResolver, Function<K, T> loader, BiConsumer<K, T> unloader, long ttl, TimeUnit ttlUnit) {
-        this.keyResolver = keyResolver;
+    public RecyclingRepository(Function<K, T> loader, Consumer<T> unloader, long ttl, TimeUnit ttlUnit) {
         this.loader = loader;
         this.unloader = unloader;
         this.entities = new ConcurrentHashMap<>();
@@ -51,9 +49,8 @@ public class RecyclingRepository<K, T extends InUseCheckable> {
             return;
 
         T value = reference.get();
-        K key = keyResolver.apply(value);
 
-        unloader.accept(key, value);
+        unloader.accept(value);
         reference.unset();
     }
 

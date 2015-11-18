@@ -151,6 +151,7 @@ public class BiRecyclingRepository<K1, K2, T extends InUseCheckable> {
             firstKey = firstKeyResolver.apply(value.get());
         }
 
+
         entitiesByFirstKey.put(normalizeFirstKey.apply(firstKey), value);
         entitiesBySecondKey.put(normalizeSecondKey.apply(secondKey), value);
         return value;

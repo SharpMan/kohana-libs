@@ -1,5 +1,7 @@
 package koh.repositories;
 
+import java.lang.ref.WeakReference;
+
 public class RepositoryReference<T> {
 
     private volatile T value;

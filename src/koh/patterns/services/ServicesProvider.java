@@ -1,9 +1,6 @@
 package koh.patterns.services;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Binding;
-import com.google.inject.Injector;
-import com.google.inject.Key;
+import com.google.inject.*;
 import koh.patterns.PatternProvider;
 import koh.patterns.services.api.DependsOn;
 import koh.patterns.services.api.Service;
@@ -75,11 +72,11 @@ public class ServicesProvider extends PatternProvider {
         injector = injector.createChildInjector(new AbstractModule() {
             @Override
             protected void configure() {
+                bind((Class)serviceClass).annotatedWith(marker).toInstance(service);
                 service.configure(binder());
                 service.inject(injector);
             }
         });
-
         instances.add(service);
     }
 

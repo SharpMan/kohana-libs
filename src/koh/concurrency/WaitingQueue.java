@@ -14,9 +14,9 @@ public class WaitingQueue<T> {
     private final ScheduledExecutorService progressExecutor;
 
     private final Consumer<T> treater;
-    private final BiConsumer<Integer, T> onChange;
+    private final ProgressConsumer<T> onChange;
 
-    public WaitingQueue(int treatmentInterval, int progressInterval, Consumer<T> treater, BiConsumer<Integer, T> onChange) {
+    public WaitingQueue(int treatmentInterval, int progressInterval, Consumer<T> treater, ProgressConsumer<T> onChange) {
         this.queue = new CopyOnWriteArrayList<>();
         this.treater = treater;
         this.onChange = onChange;
@@ -31,7 +31,7 @@ public class WaitingQueue<T> {
     @SuppressWarnings("unchecked")
     private void signalProgress() {
         synchronized(queue) {
-            while (queue.isEmpty()) {
+            if (queue.isEmpty()) {
                 try {
                     queue.wait();
                 } catch (InterruptedException ignored) {
@@ -39,8 +39,9 @@ public class WaitingQueue<T> {
             }
         }
         T[] values = (T[]) queue.toArray();
+        final int total = values.length;
         for(int i =0; i < values.length; ++i)
-            onChange.accept(i+1, values[i]);
+            onChange.signal(values[i], i+1, total);
     }
 
     private void run() {
@@ -76,10 +77,10 @@ public class WaitingQueue<T> {
     }
 
     public int push(T value) {
+        queue.addIfAbsent(value);
         synchronized(queue){
-            queue.addIfAbsent(value);
-            queue.notify();
-            return size();
+            queue.notifyAll();
         }
+        return size();
     }
 }
