@@ -17,7 +17,7 @@ public class ImprovedCachedThreadPool extends ThreadPoolExecutor {
     private final int hardLimit;
 
     public ImprovedCachedThreadPool(String name, int corePoolSize, int maximumPoolSize, int maxInQueue, int hardLimit) {
-        super(corePoolSize, maximumPoolSize, 300, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        super(corePoolSize, maximumPoolSize, 2, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
         this.setThreadFactory(new ThreadFactoryBuilder()
                 .setNameFormat("improved-threadpool-" + name + "-%d").build());
         this.allowCoreThreadTimeOut(true);
@@ -29,7 +29,7 @@ public class ImprovedCachedThreadPool extends ThreadPoolExecutor {
     }
 
     public ImprovedCachedThreadPool(String name, int corePoolSize, int maximumPoolSize, int maxInQueue) {
-        this(name, corePoolSize, maximumPoolSize, maxInQueue, 10*maximumPoolSize);
+        this(name, corePoolSize, maximumPoolSize, maxInQueue, 4*maximumPoolSize);
     }
 
     public ImprovedCachedThreadPool(String name, int corePoolSize, int maximumPoolSize) {
