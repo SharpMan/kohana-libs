@@ -12,10 +12,9 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
  */
 public class IntercomEncoder implements ProtocolEncoder {
 
-    private static final int DEFAULT_CAPACITY = 256;
+    private static final int DEFAULT_CAPACITY = 512;
 
-    public static void writeHeader(IoBuffer buf, InterMessage message, int len) {
-        buf.putShort((short) message.getMessageId());
+    public static void writeHeader(IoBuffer buf, int len) {
         buf.putInt(len);
     }
 
@@ -30,12 +29,12 @@ public class IntercomEncoder implements ProtocolEncoder {
         IoBuffer msgBuffer = IoBuffer.allocate(DEFAULT_CAPACITY)
                 .setAutoExpand(true);
 
-        writeHeader(msgBuffer, message, 0);
-        message.serialize(msgBuffer);
+        writeHeader(msgBuffer, 0);
+        msgBuffer.putObject(message);
 
         int endOffset = msgBuffer.position();
 
-        writeHeader(msgBuffer.position(0), message, endOffset - 6);
+        writeHeader(msgBuffer.position(0), endOffset - 4);
 
         msgBuffer.position(endOffset).flip();
         output.write(msgBuffer);

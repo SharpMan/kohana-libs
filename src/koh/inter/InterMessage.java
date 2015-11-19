@@ -1,17 +1,11 @@
 package koh.inter;
 
-import org.apache.mina.core.buffer.IoBuffer;
+import java.io.Serializable;
 
 /**
  *
  * @author Neo-Craft
  */
-public interface InterMessage {
-
-    int getMessageId();
-
-    void serialize(IoBuffer buf);
-
-    void deserialize(IoBuffer buf) throws Exception;
+public interface InterMessage extends Serializable {
 
 }

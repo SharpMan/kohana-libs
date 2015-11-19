@@ -1,15 +1,8 @@
 package koh.inter.messages;
 
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
-import java.sql.Timestamp;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import koh.inter.InterMessage;
-import koh.protocol.client.Message;
-import org.apache.commons.codec.Charsets;
-import org.apache.mina.core.buffer.IoBuffer;
+
+import java.sql.Timestamp;
 
 /**
  *
@@ -17,81 +10,37 @@ import org.apache.mina.core.buffer.IoBuffer;
  */
 public class PlayerCommingMessage implements InterMessage {
 
-    public static final int ID = 2;
+    public final String authenticationTicket, authenticationAddress;
+    public final Integer accountId;
+    public final String nickname, secretQuestion, secretAnswer, lastAddress;
+    public final Byte rights;
+    public final Timestamp lastLogin;
 
-    public String Ticket, CurrentIP;
-    public Integer AccountID;
-    public String Nickname, SecretQuestion, SecretAnswer, LastIP;
-    public Byte Right;
-    public Timestamp last_login;
-
-    public PlayerCommingMessage() {
-
-    }
-
-    private final static CharsetEncoder IoBufferEncoder = Charsets.UTF_8.newEncoder();
-    private final static CharsetDecoder IoBufferDecoder = Charsets.UTF_8.newDecoder();
-
-    public static void putString(IoBuffer buffer, String value) throws CharacterCodingException {
-        buffer.putInt((int) (value.length() * IoBufferEncoder.averageBytesPerChar()));
-        buffer.putString(value, (int) (value.length() * IoBufferEncoder.averageBytesPerChar()), IoBufferEncoder);
-    }
-
-    public static String readString(IoBuffer buffer) throws CharacterCodingException {
-        int size = buffer.getInt();
-        if (size > buffer.remaining()) {
-            throw new CharacterCodingException();
-        }
-        return buffer.getString(size, IoBufferDecoder);
-    }
-
-    public PlayerCommingMessage(String ticket, String CurrentIP, int id, String nn, String sq, String sa, String la, byte r, Timestamp ts) {
-        this.Ticket = ticket;
-        this.CurrentIP = CurrentIP;
-        this.AccountID = id;
-        this.Nickname = nn;
-        this.SecretQuestion = sq;
-        this.SecretAnswer = sa;
-        this.LastIP = la;
-        this.Right = r;
-        this.last_login = ts;
+    public PlayerCommingMessage(String authenticationTicket, String authenticationAddress,
+                                int accountId, String nickname, String secretQuestion, String secretAnswer,
+                                String lastAddress, byte rights, Timestamp lastLogin) {
+        this.authenticationTicket = authenticationTicket;
+        this.authenticationAddress = authenticationAddress;
+        this.accountId = accountId;
+        this.nickname = nickname;
+        this.secretQuestion = secretQuestion;
+        this.secretAnswer = secretAnswer;
+        this.lastAddress = lastAddress;
+        this.rights = rights;
+        this.lastLogin = lastLogin;
     }
 
     @Override
-    public int getMessageId() {
-        return 2;
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("PlayerCommingMessage{");
+        sb.append("authenticationAddress='").append(authenticationAddress).append('\'');
+        sb.append(", accountId=").append(accountId);
+        sb.append(", nickname='").append(nickname).append('\'');
+        sb.append(", secretQuestion='").append(secretQuestion).append('\'');
+        sb.append(", lastAddress='").append(lastAddress).append('\'');
+        sb.append(", rights=").append(rights);
+        sb.append(", lastLogin=").append(lastLogin);
+        sb.append('}');
+        return sb.toString();
     }
-
-    @Override
-    public void serialize(IoBuffer buf) {
-        try {
-            putString(buf, this.Ticket);
-            putString(buf, this.CurrentIP);
-            buf.putInt(this.AccountID);
-            putString(buf, this.Nickname);
-            putString(buf, this.SecretQuestion);
-            putString(buf, this.SecretAnswer);
-            putString(buf, this.LastIP);
-            buf.put(this.Right);
-            buf.putObject(last_login);
-            //buf.putLong(last_login.toInstant().toEpochMilli());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @Override
-    public void deserialize(IoBuffer buf) throws Exception {
-            this.Ticket = readString(buf);
-            this.CurrentIP = readString(buf);
-            this.AccountID = buf.getInt();
-            this.Nickname = readString(buf);
-            this.SecretQuestion = readString(buf);
-            this.SecretAnswer = readString(buf);
-            this.LastIP = readString(buf);
-            this.Right = buf.get();
-            last_login = (Timestamp) buf.getObject();
-
-    }
-
 }

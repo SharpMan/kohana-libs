@@ -1,13 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package koh.inter.messages;
 
 import koh.inter.InterMessage;
-import koh.inter.InterMessageEnum;
-import org.apache.mina.core.buffer.IoBuffer;
 
 /**
  *
@@ -15,34 +8,20 @@ import org.apache.mina.core.buffer.IoBuffer;
  */
 public class PlayerCreatedMessage implements InterMessage {
 
-    public static final int ID = 4;
+    public final int currentCount;
+    public final int accountId;
 
-    public int Count, Owner;
-
-    public PlayerCreatedMessage() {
-
-    }
-
-    public PlayerCreatedMessage(int count, int Owner) {
-        this.Count = count;
-        this.Owner = Owner;
+    public PlayerCreatedMessage(int currentCount, int accountId) {
+        this.currentCount = currentCount;
+        this.accountId = accountId;
     }
 
     @Override
-    public int getMessageId() {
-        return InterMessageEnum.PlayerCreated.value();
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("PlayerCreatedMessage{");
+        sb.append("currentCount=").append(currentCount);
+        sb.append(", accountId=").append(accountId);
+        sb.append('}');
+        return sb.toString();
     }
-
-    @Override
-    public void serialize(IoBuffer buf) {
-        buf.putInt(Count);
-        buf.putInt(Owner);
-    }
-
-    @Override
-    public void deserialize(IoBuffer buf) {
-        this.Count = buf.getInt();
-        this.Owner = buf.getInt();
-    }
-
 }
