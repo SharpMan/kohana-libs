@@ -43,8 +43,6 @@ public class ConsumerHandlingProvider<E extends HandlerEmitter, S> extends Handl
 
     @Override
     protected void configure() {
-        requestStaticInjection(emitterClass);
-
         Map<Class<?>, List<ConsumableHandleMethod<E, S>>> handlers = new HashMap<>();
 
         Reflections reflections = new Reflections(new ConfigurationBuilder()
@@ -73,8 +71,6 @@ public class ConsumerHandlingProvider<E extends HandlerEmitter, S> extends Handl
                     handlers.put(method.getParameterTypes()[1], callbacks);
                 }
                 if(!Modifier.isStatic(method.getModifiers())) {
-                    if (parentInjector.getBinding(method.getDeclaringClass()) == null)
-                        bind(method.getDeclaringClass()).in(Scopes.SINGLETON);
                     callbacks.add(new ConsumerMethodInvoker(parentInjector.getInstance(method.getDeclaringClass()),
                             requirements.get(method.getDeclaringClass()), method)::call);
                 }

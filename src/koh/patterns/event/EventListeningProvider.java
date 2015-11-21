@@ -2,6 +2,7 @@ package koh.patterns.event;
 
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
+import koh.patterns.event.api.EventListener;
 import koh.patterns.event.api.EventTreatmentPriority;
 import koh.patterns.event.api.Listen;
 import koh.patterns.handler.api.HandlingProvider;
@@ -52,8 +53,6 @@ public class EventListeningProvider extends HandlingProvider<Event> {
                     listeners.put(method.getParameterTypes()[0], callbacks);
                 }
                 if(!Modifier.isStatic(method.getModifiers())) {
-                    if (parentInjector.getBinding(method.getDeclaringClass()) == null)
-                        bind(method.getDeclaringClass()).in(Scopes.SINGLETON);
                     callbacks.add(new PrioritizedTreatEvent(priority, new EventMethodInvoker(
                             parentInjector.getInstance(method.getDeclaringClass()), method)::call));
                 }

@@ -33,9 +33,6 @@ public class SimpleHandlingProvider<E extends HandlerEmitter> extends HandlingPr
 
     @Override
     protected void configure() {
-
-        requestStaticInjection(emitterClass);
-
         Map<Class<? extends Annotation>, List<HandleMethod<E>>> handlers = new HashMap<>();
 
         Reflections reflections = new Reflections(new ConfigurationBuilder()
@@ -64,8 +61,6 @@ public class SimpleHandlingProvider<E extends HandlerEmitter> extends HandlingPr
                         handlers.put(annotation.annotationType(), callbacks);
                     }
                     if(!Modifier.isStatic(method.getModifiers())) {
-                        if (parentInjector.getBinding(method.getDeclaringClass()) == null)
-                            bind(method.getDeclaringClass()).in(Scopes.SINGLETON);
                         callbacks.add(new SimpleMethodInvoker(parentInjector.getInstance(method.getDeclaringClass()),
                                 requirements.get(method.getDeclaringClass()), method)::call);
                     }

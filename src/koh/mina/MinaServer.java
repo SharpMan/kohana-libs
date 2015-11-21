@@ -65,15 +65,25 @@ public class MinaServer<C extends MinaClient, M> {
     }
 
     public void configure(ProtocolDecoder decoder, ProtocolEncoder encoder, int minReadSize, int maxReadSize, int inactiveTimeoutSeconds, boolean disableTcpDelays) {
+        this.configure(decoder, encoder, minReadSize, inactiveTimeoutSeconds, disableTcpDelays);
+
+        this.acceptor.getSessionConfig().setMaxReadBufferSize(maxReadSize);
+    }
+
+    public void configure(ProtocolDecoder decoder, ProtocolEncoder encoder, int minReadSize, int inactiveTimeoutSeconds, boolean disableTcpDelays) {
+        this.configure(decoder, encoder, minReadSize, disableTcpDelays);
+
+        this.acceptor.getSessionConfig().setReaderIdleTime(inactiveTimeoutSeconds);
+    }
+
+    public void configure(ProtocolDecoder decoder, ProtocolEncoder encoder, int minReadSize, boolean disableTcpDelays) {
         acceptor.setReuseAddress(true);
         acceptor.setBacklog(100000);
 
         this.acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(encoder, decoder));
         this.acceptor.setHandler(new MinaHandler());
 
-        this.acceptor.getSessionConfig().setMaxReadBufferSize(maxReadSize);
         this.acceptor.getSessionConfig().setMinReadBufferSize(minReadSize);
-        this.acceptor.getSessionConfig().setReaderIdleTime(inactiveTimeoutSeconds);
         this.acceptor.getSessionConfig().setTcpNoDelay(disableTcpDelays);
         this.acceptor.getSessionConfig().setKeepAlive(true);
     }

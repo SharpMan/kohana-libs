@@ -8,7 +8,7 @@ import java.sql.Timestamp;
  *
  * @author Neo-Craft
  */
-public class PlayerCommingMessage implements InterMessage {
+public class PlayerComingMessage implements InterMessage {
 
     public final String authenticationTicket, authenticationAddress;
     public final Integer accountId;
@@ -16,9 +16,9 @@ public class PlayerCommingMessage implements InterMessage {
     public final Byte rights;
     public final Timestamp lastLogin;
 
-    public PlayerCommingMessage(String authenticationTicket, String authenticationAddress,
-                                int accountId, String nickname, String secretQuestion, String secretAnswer,
-                                String lastAddress, byte rights, Timestamp lastLogin) {
+    public PlayerComingMessage(String authenticationTicket, String authenticationAddress,
+                               int accountId, String nickname, String secretQuestion, String secretAnswer,
+                               String lastAddress, byte rights, Timestamp lastLogin) {
         this.authenticationTicket = authenticationTicket;
         this.authenticationAddress = authenticationAddress;
         this.accountId = accountId;
