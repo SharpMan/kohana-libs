@@ -77,6 +77,16 @@ public class BiRecyclingRepository<K1, K2, T extends InUseCheckable> {
         reference.unset();
     }
 
+    public RepositoryReference<T> getLoadedByFirst(K1 key) {
+        RepositoryReference<T> ref = this.entitiesByFirstKey.get(key);
+        return (ref != null && ref.loaded()) ? ref : null;
+    }
+
+    public RepositoryReference<T> getLoadedBySecond(K2 key) {
+        RepositoryReference<T> ref = this.entitiesBySecondKey.get(key);
+        return (ref != null && ref.loaded()) ? ref : null;
+    }
+
     public T getByFirst(K1 key) {
         try {
             return this.getReferenceByFirst(key).get();
@@ -148,7 +158,6 @@ public class BiRecyclingRepository<K1, K2, T extends InUseCheckable> {
             value.set(loaderBySecondKey.apply(secondKey));
             firstKey = firstKeyResolver.apply(value.get());
         }
-
 
         entitiesByFirstKey.put(normalizeFirstKey.apply(firstKey), value);
         entitiesBySecondKey.put(normalizeSecondKey.apply(secondKey), value);

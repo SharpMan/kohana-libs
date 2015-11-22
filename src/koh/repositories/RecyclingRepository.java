@@ -54,6 +54,11 @@ public class RecyclingRepository<K, T extends InUseCheckable> {
         reference.unset();
     }
 
+    public RepositoryReference<T> getLoaded(K key) {
+        RepositoryReference<T> ref = entities.get(key);
+        return (ref != null && ref.loaded()) ? ref : null;
+    }
+
     public T get(K key) {
         try {
             return this.getReference(key).get();
