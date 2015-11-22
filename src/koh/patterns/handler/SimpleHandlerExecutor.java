@@ -45,7 +45,14 @@ public class SimpleHandlerExecutor<E extends HandlerEmitter> {
     }
 
     void putHandlers( Map<Class<? extends Annotation>, List<HandleMethod<E>>> handlers) {
-        this.handlers.putAll(handlers);
+        for(Map.Entry<Class<? extends Annotation>, List<HandleMethod<E>>> element : handlers.entrySet()) {
+            List<HandleMethod<E>> callbacks = this.handlers.get(element.getKey());
+            if( callbacks == null) {
+                callbacks = new ArrayList<>();
+                this.handlers.put(element.getKey(), callbacks);
+            }
+            callbacks.addAll(element.getValue());
+        }
     }
 
 }

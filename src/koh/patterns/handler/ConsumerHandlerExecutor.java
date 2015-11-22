@@ -44,6 +44,13 @@ public class ConsumerHandlerExecutor<E extends HandlerEmitter, S> {
     }
 
     void putHandlers(Map<Class<?>, List<ConsumableHandleMethod<E, S>>> handlers) {
-        this.handlers.putAll(handlers);
+        for(Map.Entry<Class<?>, List<ConsumableHandleMethod<E, S>>> element : handlers.entrySet()) {
+            List<ConsumableHandleMethod<E, S>> callbacks = this.handlers.get(element.getKey());
+            if( callbacks == null) {
+                callbacks = new ArrayList<>();
+                this.handlers.put(element.getKey(), callbacks);
+            }
+            callbacks.addAll(element.getValue());
+        }
     }
 }

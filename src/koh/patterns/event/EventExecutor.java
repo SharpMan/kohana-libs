@@ -80,6 +80,13 @@ public class EventExecutor {
     }
 
     void putListeners(Map<Class<?>, List<PrioritizedTreatEvent>> listeners) {
-        this.listeners.putAll(listeners);
+        for(Map.Entry<Class<?>, List<PrioritizedTreatEvent>> element : listeners.entrySet()) {
+            List<PrioritizedTreatEvent> callbacks = this.listeners.get(element.getKey());
+            if( callbacks == null) {
+                callbacks = new ArrayList<>();
+                this.listeners.put(element.getKey(), callbacks);
+            }
+            callbacks.addAll(element.getValue());
+        }
     }
 }
