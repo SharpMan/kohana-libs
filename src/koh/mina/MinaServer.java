@@ -162,8 +162,13 @@ public class MinaServer<C extends MinaClient, M> {
 
         @Override
         public void messageReceived(IoSession session, Object message) throws Exception {
-            if(message != null && rootMessagesClass.isAssignableFrom(message.getClass()))
-                messagesReception.handle(sessionClient(session), (M)message);
+            if(message != null && rootMessagesClass.isAssignableFrom(message.getClass())) {
+                try {
+                    listener.onReceived(sessionClient(session), message);
+                } finally {
+                    messagesReception.handle(sessionClient(session), (M) message);
+                }
+            }
         }
 
         @Override

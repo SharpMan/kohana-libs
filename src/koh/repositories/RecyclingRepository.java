@@ -1,8 +1,6 @@
 package koh.repositories;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +28,10 @@ public class RecyclingRepository<K, T extends InUseCheckable> {
         this.ttlUnit = ttlUnit;
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(this::doCleaning, ttl/2, ttl/2, ttlUnit);
+    }
+
+    public Collection<RepositoryReference<T>> values() {
+        return Collections.unmodifiableCollection(entities.values());
     }
 
     private void doCleaning() {

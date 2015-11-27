@@ -91,6 +91,7 @@ public class ServicesProvider extends PatternProvider {
 
     @SuppressWarnings({"unchecked"})
     private void bindService(Class<? extends Service> serviceClass) {
+        System.out.println("Binding " + serviceClass.getName() + " with marker " + marker);
         Service service = injector.getInstance(serviceClass);
         bind((Class)serviceClass).annotatedWith(marker).toInstance(service);
         injector = injector.createChildInjector(new AbstractModule() {

@@ -1,7 +1,9 @@
 package koh.patterns;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Binding;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import koh.patterns.event.api.EventListener;
 import koh.patterns.handler.api.Handler;
 import org.reflections.Reflections;
@@ -9,6 +11,8 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
+
+import java.util.Map;
 
 public class ControllersBinder {
 
@@ -21,9 +25,11 @@ public class ControllersBinder {
     }
 
     public Injector bind() {
+
         return parentInjector.createChildInjector(new AbstractModule() {
             @Override
             protected void configure() {
+
                 Reflections reflections = new Reflections(new ConfigurationBuilder()
                         .filterInputsBy(new FilterBuilder().includePackage(packageName))
                         .setUrls(ClasspathHelper.forPackage(packageName))
