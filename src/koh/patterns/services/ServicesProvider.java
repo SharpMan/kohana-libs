@@ -1,21 +1,26 @@
 package koh.patterns.services;
 
+import com.google.common.collect.Lists;
 import com.google.inject.*;
-import koh.patterns.PatternProvider;
 import koh.patterns.services.api.DependsOn;
 import koh.patterns.services.api.Service;
 import koh.patterns.services.api.ServiceDependency;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Stream;
 
-public class ServicesProvider extends PatternProvider {
+public class ServicesProvider extends AbstractModule {
 
     public static ServiceDependency inGroup(String groupName) {
         return new ServiceDependencyImpl(groupName);
     }
 
-    private static final Comparator<Class<? extends Service>> ordered = (left, right) -> {
+    private static final Comparator<Service> ordered = (leftService, rightService) -> {
+        Class<? extends Service> left = leftService.getClass();
+        Class<? extends Service> right = rightService.getClass();
+
         Stream<Class<? extends Service>> leftDependencies = null;
         Stream<Class<? extends Service>> rightDependencies = null;
 
@@ -50,30 +55,51 @@ public class ServicesProvider extends PatternProvider {
         }
     };
 
-    private static final Comparator<Service> reversed = (o1, o2) -> -1;
+    private static final Comparator<Service> reversed = (o1, o2) -> -1 * ordered.compare(o1, o2);
 
-    private final List<Class<? extends Service>> servicesClasses;
-    private final List<Service> instances;
+    private final ArrayList<Service> instances;
     private final String groupName;
     private final ServiceDependency marker;
 
     private boolean started = false;
 
-    @SafeVarargs
-    public ServicesProvider(String groupName, Injector parentInjector, Class<? extends Service>... servicesClasses) {
-        super(parentInjector);
+    private final Logger logger;
 
+    public ServicesProvider(String groupName, Service... services) {
         this.groupName = groupName;
+        this.logger = LoggerFactory.getLogger(groupName);
         this.marker = new ServiceDependencyImpl(groupName);
-        this.servicesClasses = new ArrayList<>(servicesClasses.length);
-        this.instances = new ArrayList<>(servicesClasses.length);
-        Collections.addAll(this.servicesClasses, servicesClasses);
-        this.servicesClasses.sort(ordered);
+        this.instances = Lists.newArrayList(services);
+        this.sortServices();
         this.createShutdownHook(this::stop);
     }
 
+    private void sortServices() {
+        this.instances.sort((o1, o2) -> {
+            Class<? extends Service> left = o1.getClass();
+            Class<? extends Service> right = o2.getClass();
+
+            int leftDependencies = 0;
+            int rightDependencies = 0;
+
+            DependsOn annot = left.getAnnotation(DependsOn.class);
+            if(annot != null)
+                leftDependencies = annot.value().length;
+
+            annot = right.getAnnotation(DependsOn.class);
+            if(annot != null)
+                rightDependencies = annot.value().length;
+
+            if(rightDependencies == leftDependencies)
+                return 0;
+
+            return leftDependencies > rightDependencies ? 1 : -1;
+        });
+        this.instances.sort(ordered);
+    }
+
     private void createShutdownHook(Runnable runnable) {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown-"+groupName) {
             @Override
             public void run() {
                 runnable.run();
@@ -83,54 +109,53 @@ public class ServicesProvider extends PatternProvider {
 
     @Override
     protected void configure() {
-        servicesClasses.stream().forEachOrdered(this::bindService);
-        instances.stream().forEachOrdered(this::injectService);
-    }
-
-    private Injector injector = parentInjector;
-
-    @SuppressWarnings({"unchecked"})
-    private void bindService(Class<? extends Service> serviceClass) {
-        System.out.println("Binding " + serviceClass.getName() + " with marker " + marker);
-        Service service = injector.getInstance(serviceClass);
-        bind((Class)serviceClass).annotatedWith(marker).toInstance(service);
-        injector = injector.createChildInjector(new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind((Class)service.getClass()).annotatedWith(marker).toInstance(service);
-            }
-        });
-        instances.add(service);
+        instances.stream().forEachOrdered(this::bindService);
     }
 
     @SuppressWarnings({"unchecked"})
-    private void injectService(Service service) {
-        injector = injector.createChildInjector(new AbstractModule() {
-            @Override
-            protected void configure() {
-                service.configure(binder());
-                service.inject(injector);
-            }
-        });
+    private void bindService(Service service) {
+        bind((Class)service.getClass()).annotatedWith(marker).toInstance(service);
+        service.configure(this.binder());
     }
 
-    public void start() {
+    public void start(Injector app) {
         if(started)
             return;
         try {
+            logger.info("Starting services ...");
+            long time = System.currentTimeMillis();
             instances.stream()
-                    .forEachOrdered(Service::start);
+                    .forEachOrdered((service) -> {
+                        try {
+                            app.injectMembers(service);
+                            service.inject(app);
+                            service.start();
+                            logger.info("Service " + service.getClass().getSimpleName() + " started");
+                        }catch(Exception e) {
+                            logger.error(e.getMessage(), e);
+                            System.exit(1);
+                        }
+                    });
+            logger.info("Services started in {} ms !", (System.currentTimeMillis() - time));
         }finally {
             this.started = true;
         }
     }
 
-    public void stop() {
+    private void stop() {
         if(!started)
             return;
         try {
+            logger.info("Stopping services ...");
             instances.stream().sorted(reversed)
-                    .forEachOrdered(Service::stop);
+                    .forEachOrdered((service) -> {
+                        try {
+                            service.stop();
+                            logger.info("Service " + service.getClass().getSimpleName() + " stopped");
+                        }catch(Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    });
         } finally {
             this.started = false;
         }
@@ -138,6 +163,6 @@ public class ServicesProvider extends PatternProvider {
 
     @Override
     public String toString() {
-        return "ServicesProvider." + groupName + servicesClasses.toString();
+        return "ServicesProvider." + groupName;
     }
 }
