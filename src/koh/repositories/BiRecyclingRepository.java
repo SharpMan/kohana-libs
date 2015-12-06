@@ -113,9 +113,10 @@ public class BiRecyclingRepository<K1, K2, T extends InUseCheckable> {
                 return this.load(finalKey, null);
 
             value.sync(() -> {
-                if (!value.loaded()) {
+                if (!value.loaded())
                     this.reload(value, finalKey, null);
-                }
+                else
+                    value.reused();
             });
             return value;
         }catch(NullPointerException ignored) {
@@ -131,9 +132,10 @@ public class BiRecyclingRepository<K1, K2, T extends InUseCheckable> {
                 return this.load(null, finalKey);
 
             value.sync(() -> {
-                if(!value.loaded()) {
+                if(!value.loaded())
                     this.reload(value, null, finalKey);
-                }
+                else
+                    value.reused();
             });
             return value;
         }catch(NullPointerException ignored) {

@@ -22,6 +22,10 @@ public class RepositoryReference<T> {
         this.value = newValue;
     }
 
+    void reused() {
+        lastAccess = System.currentTimeMillis();
+    }
+
     void unset() {
         this.value = null;
     }

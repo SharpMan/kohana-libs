@@ -76,9 +76,10 @@ public class RecyclingRepository<K, T extends InUseCheckable> {
                 return this.load(key);
 
             value.sync(() -> {
-                if(!value.loaded()) {
+                if(!value.loaded())
                     this.reload(value, key);
-                }
+                else
+                    value.reused();
             });
             return value;
         }catch(NullPointerException ignored) {
