@@ -88,7 +88,19 @@ public class Enumerable {
         }
         return sb.toString();
     }
-    
+
+
+    public static String Join(Short[] array) {
+        StringBuilder sb = new StringBuilder();
+        for (short j : array) {
+            sb.append(j).append(",");
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
     public static String Join(int[][] array) {
         StringBuilder sb = new StringBuilder();
         for (int[] j : array) {
