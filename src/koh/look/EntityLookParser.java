@@ -19,11 +19,11 @@ public class EntityLookParser {
     public static final int CURRENT_FORMAT_VERSION = 0;
     public static final int DEFAULT_NUMBER_BASE = 10;
 
-    public static EntityLook Copy(EntityLook entityLook) {
+    public static EntityLook copy(EntityLook entityLook) {
         return new EntityLook(entityLook.bonesId, new ArrayList<>(entityLook.skins), new ArrayList<>(entityLook.indexedColors), new ArrayList<>(entityLook.scales),
                 new ArrayList<SubEntity>() {
                     {
-                        entityLook.subentities.forEach(sub -> this.add(new SubEntity(sub.bindingPointCategory, sub.bindingPointIndex, Copy(sub.subEntityLook))));
+                        entityLook.subentities.forEach(sub -> this.add(new SubEntity(sub.bindingPointCategory, sub.bindingPointIndex, copy(sub.subEntityLook))));
                     }
                 });
     }

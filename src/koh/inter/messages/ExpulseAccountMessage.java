@@ -1,39 +1,24 @@
 package koh.inter.messages;
 
 import koh.inter.InterMessage;
-import koh.inter.MessageEnum;
-import org.apache.mina.core.buffer.IoBuffer;
 
 /**
  *
  * @author Neo-Craft
  */
 public class ExpulseAccountMessage implements InterMessage {
-    
 
-    public int ID;
+    public final int accountId;
 
-    public ExpulseAccountMessage() {
-
-    }
-
-    public ExpulseAccountMessage(int id) {
-        this.ID = id;
+    public ExpulseAccountMessage(int accountId) {
+        this.accountId = accountId;
     }
 
     @Override
-    public int getMessageId() {
-        return MessageEnum.ExpulseAccount.value();
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ExpulseAccountMessage{");
+        sb.append("accountId=").append(accountId);
+        sb.append('}');
+        return sb.toString();
     }
-
-    @Override
-    public void serialize(IoBuffer buf) {
-        buf.putInt(ID);
-    }
-
-    @Override
-    public void deserialize(IoBuffer buf) {
-        this.ID = buf.getInt();
-    }
-
 }

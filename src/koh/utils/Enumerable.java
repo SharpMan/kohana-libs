@@ -1,6 +1,6 @@
 package koh.utils;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.List;
 
 /**
  *
@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Enumerable {
     
-    public static byte[] Range(int min, int max) {
+    public static byte[] range(int min, int max) {
         byte[] toReturn = new byte[max - min + 1];
         int seq = 0;
         for (int i = min; i <= max; i++) {
@@ -18,7 +18,7 @@ public class Enumerable {
         return toReturn;
     }
     
-     public static String Join(byte[] c, char sep) {
+     public static String join(byte[] c, char sep) {
         StringBuilder sb = new StringBuilder();
         for (byte s : c) {
             sb.append(s).append(sep);
@@ -29,7 +29,7 @@ public class Enumerable {
         return sb.toString();
     }
     
-    public static String Join(int[] c, char sep) {
+    public static String join(int[] c, char sep) {
         StringBuilder sb = new StringBuilder();
         for (int s : c) {
             sb.append(s).append(sep);
@@ -40,7 +40,7 @@ public class Enumerable {
         return sb.toString();
     }
     
-    public static String Join(String[] c, char sep) {
+    public static String join(String[] c, char sep) {
         StringBuilder sb = new StringBuilder();
         for (String s : c) {
             sb.append(s).append(sep);
@@ -51,7 +51,7 @@ public class Enumerable {
         return sb.toString();
     }
     
-     public static byte[] StringToByteArray(String c) {
+     public static byte[] stringToByteArray(String c) {
         if (c.isEmpty()) {
             return new byte[0];
         }
@@ -63,11 +63,13 @@ public class Enumerable {
     }
      
     
-    public static int[] StringToIntArray(String c) {
-        return StringToIntArray(c,",");
+    public static int[] stringToIntArray(String c) {
+        if(c.equalsIgnoreCase("-1"))
+            return new int[0];
+        return stringToIntArray(c,",");
     }
     
-     public static int[] StringToIntArray(String c, String sep) {
+     public static int[] stringToIntArray(String c, String sep) {
         if (c.isEmpty()) {
             return new int[0];
         }
@@ -78,7 +80,7 @@ public class Enumerable {
         return d;
     }
     
-    public static String Join(int[] array) {
+    public static String join(int[] array) {
         StringBuilder sb = new StringBuilder();
         for (int j : array) {
             sb.append(j).append(",");
@@ -88,11 +90,56 @@ public class Enumerable {
         }
         return sb.toString();
     }
-    
+
+
+    public static String join(Short[] array) {
+        StringBuilder sb = new StringBuilder();
+        for (short j : array) {
+            sb.append(j).append(",");
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
+    public static <T> String join(T[] array) {
+        StringBuilder sb = new StringBuilder();
+        for (T j : array) {
+            sb.append(j).append(",");
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
+    public static String join(short[] array) {
+        StringBuilder sb = new StringBuilder();
+        for (short j : array) {
+            sb.append(j).append(",");
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
+    public static String join(List<int[]> array) {
+        StringBuilder sb = new StringBuilder();
+        for (int[] j : array) {
+            sb.append(join(j)).append(";");
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
     public static String Join(int[][] array) {
         StringBuilder sb = new StringBuilder();
         for (int[] j : array) {
-            sb.append(Join(j)).append(";");
+            sb.append(join(j)).append(";");
         }
         if (sb.length() > 0) {
             sb.setLength(sb.length() - 1);
@@ -100,18 +147,18 @@ public class Enumerable {
         return sb.toString();
     }
     
-    public static int[][] StringToMultiArray(String c) {
+    public static int[][] stringToMultiArray(String c) {
         if (c.isEmpty()) {
             return new int[0][0];
         }
         int[][] array = new int[c.split(";").length][];
         for (int i = 0; i < array.length; i++) {
-            array[i] = StringToIntArray(c.split(";")[i]);
+            array[i] = stringToIntArray(c.split(";")[i]);
         }
         return array;
     }
     
-    public static byte[] DuplicatedKey(long size, byte Duplicated) {
+    public static byte[] duplicatedKey(long size, byte Duplicated) {
         byte[] toReturn = new byte[(int) size];
         for (int i = 0; i < toReturn.length; i++) {
             toReturn[i] = Duplicated;
@@ -119,7 +166,7 @@ public class Enumerable {
         return toReturn;
     }
     
-    public static int[] DuplicatedKeyInt(long size, int Duplicated) {
+    public static int[] duplicatedKeyInt(long size, int Duplicated) {
         int[] toReturn = new int[(int) size];
         for (int i = 0; i < toReturn.length; i++) {
             toReturn[i] = Duplicated;
