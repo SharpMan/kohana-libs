@@ -154,7 +154,7 @@ public class BiRecyclingRepository<K1, K2, T extends InUseCheckable> {
             value.set(loaderByFirstKey.apply(firstKey));
             secondKey = secondKeyResolver.apply(value.get());
         } else {
-            RepositoryReference<T> existing = entitiesBySecondKey.get(secondKey);
+            final RepositoryReference<T> existing = entitiesBySecondKey.get(secondKey);
             if(existing != null)
                 return existing;
 

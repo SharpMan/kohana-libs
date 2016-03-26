@@ -15,6 +15,7 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.ProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolEncoder;
+import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.apache.mina.util.ConcurrentHashSet;
 
@@ -86,6 +87,10 @@ public class MinaServer<C extends MinaClient, M> {
         this.acceptor.getSessionConfig().setMinReadBufferSize(minReadSize);
         this.acceptor.getSessionConfig().setTcpNoDelay(disableTcpDelays);
         this.acceptor.getSessionConfig().setKeepAlive(true);
+    }
+
+    public SocketSessionConfig getSessionConfig(){
+        return this.acceptor.getSessionConfig();
     }
 
     public void bind(int port) throws IOException {
