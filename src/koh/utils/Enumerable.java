@@ -1,6 +1,9 @@
 package koh.utils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -28,6 +31,44 @@ public class Enumerable {
         }
         return sb.toString();
     }
+
+    public static Map<Integer,Integer> stringToIntHashMap(String entry, int size){
+        final Map<Integer,Integer> result = new ConcurrentHashMap<>(size);
+        if (!entry.isEmpty()) {
+            for(String sp : entry.split(";")){
+                result.put(Integer.parseInt(sp.split(",")[0]), Integer.parseInt(sp.split(",")[1]));
+            }
+        }
+        return result;
+    }
+
+    public static Map<Integer,Short> stringToShortHashMap(String entry, int size){
+        final Map<Integer,Short> result = new ConcurrentHashMap<>(size);
+        if (!entry.isEmpty()) {
+            for(String sp : entry.split(";")){
+                result.put(Integer.parseInt(sp.split(",")[0]), Short.parseShort(sp.split(",")[1]));
+            }
+        }
+        return result;
+    }
+
+    public static String join(Map<Integer,Integer> entry){
+        StringBuilder sb = new StringBuilder();
+        entry.forEach((a,b) -> sb.append(a).append(',').append(b).append(';'));
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
+    public static String join2(Map<Integer,Short> entry){
+        StringBuilder sb = new StringBuilder();
+        entry.forEach((a,b) -> sb.append(a).append(',').append(b).append(';'));
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
     
     public static String join(int[] c, char sep) {
         StringBuilder sb = new StringBuilder();
@@ -50,8 +91,20 @@ public class Enumerable {
         }
         return sb.toString();
     }
-    
-     public static byte[] stringToByteArray(String c) {
+
+    public static short[] stringToShortArray(String c) {
+        if (c.isEmpty()) {
+            return new short[0];
+        }
+        short[] d = new short[c.split(",").length];
+        for (int i = 0; i < c.split(",").length; i++) {
+            d[i] = Short.parseShort(c.split(",")[i]);
+        }
+        return d;
+    }
+
+
+    public static byte[] stringToByteArray(String c) {
         if (c.isEmpty()) {
             return new byte[0];
         }

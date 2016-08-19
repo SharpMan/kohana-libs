@@ -16,18 +16,31 @@ public class IntercomDecoder extends CumulativeProtocolDecoder {
         if (buf.remaining() < 4)
             return false;
 
-        int messageLength = buf.getInt();
+        final int messageLength = buf.getInt();
 
         if (buf.remaining() < messageLength)
             return false;
 
+        if(Math.abs(Integer.MAX_VALUE - messageLength) < 5){ //java.lang.OutOfMemoryError: Requested array size exceeds VM limit
+            return true;
+        }
+
         int startPosition = buf.position();
 
-        InterMessage message;
+        final InterMessage message;
         try {
             message = (InterMessage)buf.getObject();
         }catch(Exception ignored){
-            buf.position(startPosition).skip(messageLength);
+            try {
+                //buf.position(startPosition).skip(messageLength);
+                if(buf.hasRemaining()){
+                    buf.skip(buf.remaining());
+                    return false;
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
             return true;
         }
 

@@ -20,13 +20,13 @@ public class Glicko2Player {
 
     //rating = 1500, rd = 350, volatility = 0.06, mu = null, phi = null, sigma = null, systemconstant = 0.75
 
-    public Glicko2Player(double rating, String[] values){
-        this.rating = rating;
-        this.ratingDeviation = Double.parseDouble(values[0]);
-        this.sigma = Double.parseDouble(values[1]);
-        this.mu = Double.parseDouble(values[2]);
-        this.phi = Double.parseDouble(values[3]);
-        this.tau = Double.parseDouble(values[4]);
+    public Glicko2Player(String[] values){
+        this.rating =  Double.parseDouble(values[0]);
+        this.ratingDeviation = Double.parseDouble(values[1]);
+        this.sigma = Double.parseDouble(values[2]);
+        this.mu = Double.parseDouble(values[3]);
+        this.phi = Double.parseDouble(values[4]);
+        this.tau = Double.parseDouble(values[5]);
     }
 
     public static Glicko2Player defaultValue() {
@@ -78,9 +78,9 @@ public class Glicko2Player {
     public void update() {
         final double[] results = this.addMatches(this.M);
         this.rating = results[0];
-        if(this.rating < 1500){
+        /*if(this.rating < 1500){
             this.rating = 1500;
-        }
+        }*/
         this.ratingDeviation = results[1];
         this.mu = results[2];
         this.phi = results[3];
@@ -156,14 +156,22 @@ public class Glicko2Player {
     public int getRating(){
         return (int) this.rating;
     }
+    public double getRatingd(){
+        return this.rating;
+    }
+
+    public int getScreenRating(){
+        return (int) Math.min(2300, Math.max(0, (rating - 1500)));
+    }
 
 
     public String serialize(){
         final StringBuilder sb = new StringBuilder();
-        sb.append(ratingDeviation).append(',');
-        sb.append(sigma).append(',');
-        sb.append(mu).append(',');
-        sb.append(phi).append(',');
+        sb.append(rating).append(';');
+        sb.append(ratingDeviation).append(';');
+        sb.append(sigma).append(';');
+        sb.append(mu).append(';');
+        sb.append(phi).append(';');
         sb.append(tau);
         return sb.toString();
     }
