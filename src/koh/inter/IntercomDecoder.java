@@ -29,7 +29,7 @@ public class IntercomDecoder extends CumulativeProtocolDecoder {
 
         final InterMessage message;
         try {
-            message = (InterMessage)buf.getObject();
+            message = (InterMessage) buf.getObject();
         }catch(Exception ignored){
             try {
                 //buf.position(startPosition).skip(messageLength);
@@ -41,6 +41,7 @@ public class IntercomDecoder extends CumulativeProtocolDecoder {
             catch (Exception e){
                 e.printStackTrace();
             }
+            ignored.printStackTrace();
             return true;
         }
 
