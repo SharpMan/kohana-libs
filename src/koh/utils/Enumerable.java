@@ -210,6 +210,17 @@ public class Enumerable {
         }
         return array;
     }
+
+    public static int[][] stringToMultiArray(String c,int len) {
+        if (c.isEmpty()) {
+            return new int[0][len];
+        }
+        int[][] array = new int[c.split(";").length][2];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = stringToIntArray(c.split(";")[i]);
+        }
+        return array;
+    }
     
     public static byte[] duplicatedKey(long size, byte Duplicated) {
         byte[] toReturn = new byte[(int) size];

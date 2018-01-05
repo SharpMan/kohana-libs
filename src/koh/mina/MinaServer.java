@@ -196,8 +196,9 @@ public class MinaServer<C extends MinaClient, M> {
     }
 
     public void broadcast(Object message) {
-        parallelStreamOn(clients.parallelStream(), broadcaster)
-                .forEach((client) -> client.write(message));
+        this.acceptor.broadcast(message);
+        /*parallelStreamOn(clients.parallelStream(), broadcaster)
+                .forEach((client) -> client.write(message));*/
     }
 
     public void broadcast(Object message, Predicate<MinaClient> predicate) {
