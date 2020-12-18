@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  *
- * @author Neo-Craft
+ * @author Melancholia
  */
 public class EntityLookParser {
 
@@ -32,7 +32,7 @@ public class EntityLookParser {
         return new Couple<Integer, Integer>(indexedColor >> 24, indexedColor & 16777215);
     }
 
-    private static int ParseIndexedColor(String str) {
+    private static int parseIndexedColor(String str) {
         int length = str.indexOf("=");
         boolean flag = (int) str.charAt(length + 1) == 35;
         return Integer.parseInt(str.substring(0, length)) << 24 | (flag ? Integer.parseInt(str.substring(length + (flag ? 2 : 1), str.length() - (length + (flag ? 2 : 1))), 16) : Integer.parseInt(str.substring(length + (flag ? 2 : 1), str.length() - (length + (flag ? 2 : 1)))));
@@ -169,7 +169,7 @@ public class EntityLookParser {
         return (el);
     }
 
-    public static String ConvertToString(EntityLook entityLook) {
+    public static String convertToString(EntityLook entityLook) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{");
         int num1 = 0;
@@ -212,7 +212,7 @@ public class EntityLookParser {
             num5 = 0;
             String[] array = new String[entityLook.subentities.size()];
             for (int i = 0; i < entityLook.subentities.size(); i++) {
-                array[i] = ConvertToString(entityLook.subentities.get(i));
+                array[i] = convertToString(entityLook.subentities.get(i));
             }
             stringBuilder.append(StringUtils.join(array, ","));
         }
@@ -221,7 +221,7 @@ public class EntityLookParser {
     }
 
     //ParseIndexedColor
-    private static Integer[] ParseCollectionIntColor(String str) {
+    private static Integer[] parseCollectionIntColor(String str) {
         if (str == null || str.isEmpty()) {
             return new Integer[0];
         }
@@ -229,23 +229,23 @@ public class EntityLookParser {
         int num = str.indexOf(',', startIndex);
         if (num == -1) {
             return new Integer[]{
-                ParseIndexedColor(str)
+                parseIndexedColor(str)
             };
         } else {
             Integer[] objArray = new Integer[StringExtensions.CountOccurences(str, ',', startIndex, str.length() - startIndex) + 1];
             int index = 0;
             while (num != -1) {
-                objArray[index] = ParseIndexedColor(str.substring(startIndex, num - startIndex));
+                objArray[index] = parseIndexedColor(str.substring(startIndex, num - startIndex));
                 startIndex = num + 1;
                 num = str.indexOf(',', startIndex);
                 ++index;
             }
-            objArray[index] = ParseIndexedColor(str.substring(startIndex, str.length() - startIndex));
+            objArray[index] = parseIndexedColor(str.substring(startIndex, str.length() - startIndex));
             return objArray;
         }
     }
 
-    private static int[] ParseCollectionInt(String str) {
+    private static int[] parseCollectionInt(String str) {
         if (str == null || str.isEmpty()) {
             return new int[0];
         }
@@ -281,7 +281,7 @@ public class EntityLookParser {
         throw (new Error((("Unknown number base type '" + l) + "' in an Entity Look string.")));
     }
 
-    private static Short[] ParseCollectionShort(String str) {
+    private static Short[] parseCollectionShort(String str) {
         if (str == null || str.isEmpty()) {
             return new Short[0];
         }
@@ -305,7 +305,7 @@ public class EntityLookParser {
         }
     }
 
-    public static EntityLook ToEntityLook(String str) {
+    public static EntityLook toEntityLook(String str) {
         if (str == null || str.isEmpty() || (int) str.charAt(0) != 123) {
             throw new Error("Incorrect EntityLook format : " + str);
         }
@@ -323,19 +323,19 @@ public class EntityLookParser {
         Short[] numArray1 = new Short[0];
         int num2;
         if ((num2 = str.indexOf('|', startIndex2)) != -1 || (num2 = str.indexOf('}', startIndex2)) != -1) {
-            numArray1 = ParseCollectionShort(str.substring(startIndex2, num2 - startIndex2));
+            numArray1 = parseCollectionShort(str.substring(startIndex2, num2 - startIndex2));
             startIndex2 = num2 + 1;
         }
         Integer[] numArray2 = new Integer[0];
         int num3;
         if ((num3 = str.indexOf('|', startIndex2)) != -1 || (num3 = str.indexOf('}', startIndex2)) != -1) {
-            numArray2 = ParseCollectionIntColor(str.substring(startIndex2, num3 - startIndex2));
+            numArray2 = parseCollectionIntColor(str.substring(startIndex2, num3 - startIndex2));
             startIndex2 = num3 + 1;
         }
         Short[] numArray3 = new Short[0];
         int num4;
         if ((num4 = str.indexOf('|', startIndex2)) != -1 || (num4 = str.indexOf('}', startIndex2)) != -1) {
-            numArray3 = ParseCollectionShort(str.substring(startIndex2, num4 - startIndex2));
+            numArray3 = parseCollectionShort(str.substring(startIndex2, num4 - startIndex2));
             startIndex2 = num4 + 1;
         }
         ArrayList<SubEntity> list = new ArrayList<>();
@@ -358,18 +358,18 @@ public class EntityLookParser {
                 }
                 ++index;
             } while (num9 > 0);
-            list.add(new SubEntity(num7, num8, ToEntityLook(stringBuilder.toString())));
+            list.add(new SubEntity(num7, num8, toEntityLook(stringBuilder.toString())));
         }
         return new EntityLook(bonesId, Arrays.asList(numArray1), Arrays.asList(numArray2), Arrays.asList(numArray3), list);
     }
 
-    public static String ConvertToString(SubEntity subEntity) {
+    public static String convertToString(SubEntity subEntity) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(subEntity.bindingPointCategory);
         stringBuilder.append("@");
         stringBuilder.append(subEntity.bindingPointIndex);
         stringBuilder.append("=");
-        stringBuilder.append(ConvertToString(subEntity.subEntityLook));
+        stringBuilder.append(convertToString(subEntity.subEntityLook));
         return stringBuilder.toString();
     }
 }

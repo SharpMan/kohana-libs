@@ -5,7 +5,7 @@ import java.util.Comparator;
 import com.google.common.collect.Ordering;
 
 /*
-@author BlackrushMambo
+@author Melancholia
 */
 public class SortedList<T> extends ArrayList<T> {
     public static <T> SortedList<T> create(Comparator<T> comparator) {
